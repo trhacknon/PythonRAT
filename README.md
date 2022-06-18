@@ -107,7 +107,7 @@ Options:
   --help                          Show this message and exit.
 ```
 *Note: password for client authentication needs to be written directly to [src/client.py](src/client.py). (Default values match)*
-*You can directly edit [src/client.py](src/client.py) file to avoid using the parameters. *
+*You can directly edit [src/client.py](src/client.py) file to avoid using the parameters.*
 
 ## License
 This project is licensed under the terms of the MIT license.
