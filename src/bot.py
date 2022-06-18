@@ -1,5 +1,5 @@
 from websockets.server import WebSocketServerProtocol as WebSocketConn
-from websockets.exceptions import ConnectionClosedError
+from websockets.exceptions import ConnectionClosedError,ConnectionClosedOK
 
 
 class Bot:
@@ -14,11 +14,11 @@ class Bot:
         self.user = user
 
     def __str__(self):
-        return f"Bot {self.remote_address}, idx: {self.idx}, user: {self.user}"
+        return f"Bot {self.remote_address}, user: {self.user}"
 
     async def send_command(self, command: str):
         try:
             await self.ws.send(command)
             return await self.ws.recv()
-        except ConnectionClosedError:
+        except (ConnectionClosedError,RuntimeError,ConnectionClosedOK):
             return False

