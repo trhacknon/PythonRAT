@@ -1,7 +1,7 @@
 FROM python:3.7-slim
 
-EXPOSE 6777
-EXPOSE 6767
+EXPOSE 4444
+EXPOSE 9000
 
 ENV APP_DIR /usr/python-botnet/
 WORKDIR ${APP_DIR}

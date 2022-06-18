@@ -1,15 +1,15 @@
-# PythonBotnet (C&C)
+# PythonRAT (C&C or C2)
 
 Simple Command and Control (C&C) botnet written asynchronously using asyncio
 in Python3.7. Communication is implemented using unencrypted websockets.
+
+Default Project : [here](https://github.com/HappyStoic/PythonBotnet)
 
 ### Features
 
 * Run bash command on multiple bot clients simultaneously
 * Enable reverse-shell on a specific bot client
 * Bot client authentication using password
-
-*See [planned features](#to-be-done)*
 
 ### Example
 
@@ -18,7 +18,7 @@ in Python3.7. Communication is implemented using unencrypted websockets.
 
 ### Why?
 
-Developed as a part of an assignment in CTU class Introduction to Security
+For fun :)
 
 ## Getting started
 
@@ -38,12 +38,13 @@ $ docker-compose up -d
 To connect to the control panel, websocket cli client is needed (e.g. 
 [wscat](https://www.npmjs.com/package/wscat))
 ```
-$ wscat -c localhost:6767
+$ wscat -c localhost:4444
 Connected (press CTRL+C to quit)
-< Enter: 
+> Enter:
 * "0" - to print bot clients collection
 * Indexes of clients separated by space to send bash command to
 * Index of one client to jump into bash (send "exit" for termination)
+* Send "all" to send a single command for each bot
 
 >
 ```
@@ -62,7 +63,7 @@ Then run control panel server, bot client and websocket cli client in separated
 ```
 $ python3.7 src/server.py
 $ python3.7 src/client.py
-$ wscat -c localhost:6767
+$ wscat -c localhost:4444
 ...
 ```
 
@@ -81,6 +82,16 @@ Options:
   -i, --ip_address TEXT       Ip address for server to listen on
   --help                      Show this message and exit.
 ```
+#####Tips 
+
+You can directly edit server.py file to avoid using the parameters.
+
+You can run the following command to run server.py in background :
+
+```
+nohup python3 server.py & 
+
+```
 
 #### Botnet client
 ```
@@ -95,24 +106,8 @@ Options:
                                   connect to c&c server
   --help                          Show this message and exit.
 ```
-*Note: password for client authentication needs to be written directly to 
-[src/client.py](src/client.py). (Default values match)*
-
-## To be done:
-
-#### New features:
-* Encrypt the websocket communication using TLS
-* Add option to provide configuration in file
-    * Log into file
-    * Tls keys for encrypted communication
-    * Ports
-    * ...
-* Make client less dependant on 3rd party libraries 
-* Add option for domain generating algorithms
-* Prettify the CLI view
-
-#### Issues to be solved:
-* reverse shell freezes when interactive command as `htop` or `ping` is executed
+*Note: password for client authentication needs to be written directly to [src/client.py](src/client.py). (Default values match)*
+*You can directly edit [src/client.py](src/client.py) file to avoid using the parameters. *
 
 ## License
 This project is licensed under the terms of the MIT license.

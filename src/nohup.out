@@ -1,0 +1,10 @@
+INFO:__main__:Starting bot client server on 0.0.0.0:9000
+/home/balgogan/PythonRAT/src/server.py:237: DeprecationWarning: There is no current event loop
+  asyncio.get_event_loop().run_until_complete(bot_clients_server)
+INFO:__main__:Starting control server on 0.0.0.0:4444
+/home/balgogan/PythonRAT/src/server.py:240: DeprecationWarning: There is no current event loop
+  asyncio.get_event_loop().run_until_complete(control_server)
+/home/balgogan/PythonRAT/src/server.py:241: DeprecationWarning: There is no current event loop
+  asyncio.get_event_loop().run_forever()
+INFO:__main__:Command and control connection established
+INFO:__main__:Command and control connection closed
