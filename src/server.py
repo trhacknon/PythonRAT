@@ -61,8 +61,8 @@ class Context:
             if isNotListed(new_bot.remote_address, self.bots):
                 self.bots.append(new_bot)
                 logger.info(f"Added {new_bot}")
-                bot_length = self.bots.index(self.bots[-1]) + 2
-                print(f'Longueur liste bot : {bot_length}')
+                bot_length += 1
+                print(f'Longueur liste bot : {len(self.bots)}')
                 #print(f"self.bots[0] : {self.bots[0]}")
                 #print(f"self.bots : {self.bots}")
                 #print(f'new_bot : {new_bot}')
@@ -78,6 +78,7 @@ class Context:
     def remove_bot_client(self, bot: Bot):
         if bot in self.bots:
             self.bots.remove(bot)
+            bot_length -= 1
             logger.info(f"{bot} removed")
             logger.info(f"Bots : {len(self.bots)}")
 
