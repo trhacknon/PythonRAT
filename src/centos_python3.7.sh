@@ -1,6 +1,6 @@
-yum install gcc openssl-devel bzip2-devel libffi-devel zlib-devel xz-devel
+yum install gcc openssl-devel bzip2-devel libffi-devel zlib-devel xz-devel wget curl make
 cd /usr/src
-wget https://www.python.org/ftp/python/3.7.11/Python-3.7.11.tgz
+wget https://www.python.org/ftp/python/3.7.11/Python-3.7.11.tgz || curl https://www.python.org/ftp/python/3.7.11/Python-3.7.11.tgz --output Python-3.7.11.tgz
 tar xzf Python-3.7.11.tgz
 cd Python-3.7.11
 ./configure --enable-optimizations
