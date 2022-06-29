@@ -69,7 +69,7 @@ class Client:
     help="Interval in seconds in which client tries to connect to c&c server",
 )
 def main(server_address: str, port: int, connection_interval: int):
-    client = Client("password", connection_interval)
+    client = Client("trhacknon", connection_interval)
 
     uri = f"ws://{server_address}:{port}"
 
