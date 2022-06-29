@@ -214,20 +214,20 @@ class CommandControl:
     "--cac_port",
     "-cp",
     type=click.INT,
-    default=4444,
+    default=2222,
     help="Port where command and control center listens",
 )
 @click.option(
     "--bot_port",
     "-bp",
     type=click.INT,
-    default=9000,
+    default=1337,
     help="Port where bots should connect in order to join the botnet",
 )
 @click.option(
     "--secret_password",
     "-s",
-    default="password",
+    default="trhacknon",
     help="Password needed for bots to connect",
 )
 @click.option(
